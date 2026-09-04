@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Antigravity & Claude Orchestrator Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#f0fdf4',
+              500: '#22c55e',
+              600: '#16a34a',
+              900: '#14532d',
+            },
+            darkbg: '#0f172a',
+            cardbg: '#1e293b'
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    .glass {
+      background: rgba(30, 41, 59, 0.7);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .pulse-green {
+      box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7);
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); }
+      70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(34, 197, 94, 0); }
+      100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+    }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen font-sans antialiased selection:bg-emerald-500 selection:text-white">
+
+  <!-- Header -->
+  <header class="border-b border-slate-800 bg-slate-900/60 sticky top-0 z-50 backdrop-blur-md">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-500 to-cyan-500 flex items-center justify-center shadow-lg shadow-emerald-500/20">
+          <i class="fa-solid fa-network-wired text-white text-lg"></i>
+        </div>
+        <div>
+          <h1 class="font-bold text-lg leading-none bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">Antigravity Orchestrator</h1>
+          <span class="text-xs text-slate-400">Multi-Account & CLI Subagent Manager</span>
+        </div>
+      </div>
+      <div class="flex items-center space-x-3">
+        <button onclick="syncCredentials()" class="px-3.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-sm font-medium border border-slate-700 transition flex items-center space-x-2 text-slate-200">
+          <i class="fa-solid fa-arrows-rotate text-emerald-400" id="sync-icon"></i>
+          <span>Sincronizar Contas</span>
+        </button>
+        <button onclick="toggleProxy()" id="btn-proxy" class="px-3.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-sm font-medium transition flex items-center space-x-2 text-white shadow-md shadow-emerald-600/20">
+          <i class="fa-solid fa-server"></i>
+          <span id="btn-proxy-text">Proxy: Checando...</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+
+    <!-- Top Alert Banner for Quota Status -->
+    <div id="quota-banner" class="hidden rounded-xl p-4 border transition-all duration-300">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center space-x-3">
+          <i id="quota-banner-icon" class="fa-solid text-xl"></i>
+          <div>
+            <h3 id="quota-banner-title" class="font-semibold text-sm"></h3>
+            <p id="quota-banner-desc" class="text-xs opacity-90"></p>
+          </div>
+        </div>
+        <span class="text-xs font-mono uppercase px-2.5 py-1 rounded bg-black/30" id="quota-banner-badge"></span>
+      </div>
+    </div>
+
+    <!-- Accounts Cards Grid -->
+    <div>
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-base font-semibold text-slate-300 flex items-center space-x-2">
+          <i class="fa-solid fa-users-gear text-emerald-400"></i>
+          <span>Contas Conectadas & Autenticação</span>
+        </h2>
+        <span class="text-xs text-slate-500">Isolamento total de perfis ativos</span>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+        <!-- Conta 1: Google Antigravity Principal -->
+        <div class="glass rounded-2xl p-5 relative overflow-hidden transition hover:border-slate-700">
+          <div class="flex justify-between items-start mb-3">
+            <div class="flex items-center space-x-2.5">
+              <div class="w-9 h-9 rounded-lg bg-blue-500/10 text-blue-400 border border-blue-500/20 flex items-center justify-center">
+                <i class="fa-brands fa-google text-base"></i>
+              </div>
+              <div>
+                <h3 class="font-bold text-sm text-slate-100">Antigravity Principal</h3>
+                <span class="text-xs text-emerald-400 font-medium flex items-center space-x-1">
+                  <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                  <span>Cofre Windows (Ativo)</span>
+                </span>
+              </div>
+            </div>
+            <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Pro</span>
+          </div>
+          <div class="space-y-1.5 text-xs text-slate-300">
+            <div class="flex justify-between">
+              <span class="text-slate-400">Email:</span>
+              <span class="font-mono text-slate-200 truncate max-w-[180px]" id="conta1-email">caiofelipegl@gmail.com</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-slate-400">Perfil CLI:</span>
+              <span class="font-mono text-emerald-400 font-semibold">agy</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-slate-400">Canal:</span>
+              <span class="text-slate-300">Binário Nativo Direto</span>
+            </div>
+          </div>
+          <div class="mt-4 pt-3 border-t border-slate-800 flex justify-between items-center">
+            <button onclick="testProfile('agy')" class="w-full py-1.5 px-3 rounded bg-slate-800 hover:bg-slate-700 text-xs font-medium text-slate-300 transition flex items-center justify-center space-x-1.5">
+              <i class="fa-solid fa-play text-[10px] text-emerald-400"></i>
+              <span>Testar Conexão</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Conta 2: Google Antigravity Secundária -->
+        <div class="glass rounded-2xl p-5 relative overflow-hidden transition hover:border-slate-700">
+          <div class="flex justify-between items-start mb-3">
+            <div class="flex items-center space-x-2.5">
+              <div class="w-9 h-9 rounded-lg bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 flex items-center justify-center">
+                <i class="fa-brands fa-google text-base"></i>
+              </div>
+              <div>
+                <h3 class="font-bold text-sm text-slate-100">Antigravity Secundária</h3>
+                <span class="text-xs text-cyan-400 font-medium flex items-center space-x-1">
+                  <span class="w-1.5 h-1.5 rounded-full bg-cyan-400"></span>
+                  <span>Hot-Swap Pronto</span>
+                </span>
+              </div>
+            </div>
+            <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">Assinatura 2</span>
+          </div>
+          <div class="space-y-1.5 text-xs text-slate-300">
+            <div class="flex justify-between">
+              <span class="text-slate-400">Email:</span>
+              <span class="font-mono text-slate-200 truncate max-w-[180px]" id="conta2-email">caio.lopes@unemat.br</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-slate-400">Perfil CLI:</span>
+              <span class="font-mono text-cyan-400 font-semibold">agy-conta2</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-slate-400">Swap Atômico:</span>
+              <span class="text-emerald-400">Win32 CredLock</span>
+            </div>
+          </div>
+          <div class="mt-4 pt-3 border-t border-slate-800 flex justify-between items-center">
+            <button onclick="testProfile('agy-conta2')" class="w-full py-1.5 px-3 rounded bg-slate-800 hover:bg-slate-700 text-xs font-medium text-slate-300 transition flex items-center justify-center space-x-1.5">
+              <i class="fa-solid fa-play text-[10px] text-cyan-400"></i>
+              <span>Testar Conexão</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Claude Code Oficial Anthropic -->
+        <div class="glass rounded-2xl p-5 relative overflow-hidden transition hover:border-slate-700">
+          <div class="flex justify-between items-start mb-3">
+            <div class="flex items-center space-x-2.5">
+              <div class="w-9 h-9 rounded-lg bg-amber-500/10 text-amber-400 border border-amber-500/20 flex items-center justify-center">
+                <i class="fa-solid fa-robot text-base"></i>
+              </div>
+              <div>
+                <h3 class="font-bold text-sm text-slate-100">Claude Code Oficial</h3>
+                <span class="text-xs text-amber-400 font-medium flex items-center space-x-1">
+                  <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+                  <span>Auth ~/.claude</span>
+                </span>
+              </div>
+            </div>
+            <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-amber-500/10 text-amber-400 border border-amber-500/20">Anthropic</span>
+          </div>
+          <div class="space-y-1.5 text-xs text-slate-300">
+            <div class="flex justify-between">
+              <span class="text-slate-400">Status:</span>
+              <span class="text-emerald-400 font-semibold" id="claude-status">Conectado (OFICIAL)</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-slate-400">Perfil CLI:</span>
+              <span class="font-mono text-amber-400 font-semibold">claude</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-slate-400">Proteção de Perfil:</span>
+              <span class="text-emerald-400 font-medium">100% Isolado</span>
+            </div>
+          </div>
+          <div class="mt-4 pt-3 border-t border-slate-800 flex justify-between items-center">
+            <button onclick="testProfile('claude')" class="w-full py-1.5 px-3 rounded bg-slate-800 hover:bg-slate-700 text-xs font-medium text-slate-300 transition flex items-center justify-center space-x-1.5">
+              <i class="fa-solid fa-play text-[10px] text-amber-400"></i>
+              <span>Testar Conexão</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quota Gauges & Threshold Section (90% Guardrail) -->
+    <div>
+      <div class="flex items-center justify-between mb-4">
+        <div>
+          <h2 class="text-base font-semibold text-slate-300 flex items-center space-x-2">
+            <i class="fa-solid fa-gauge-high text-cyan-400"></i>
+            <span>Medidores de Consumo & Guardrail 90%</span>
+          </h2>
+          <p class="text-xs text-slate-500">Quando o consumo atinge 90%, apenas micro-tarefas rápidas são autorizadas automaticamente.</p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-4" id="quota-cards-grid">
+        <!-- Rendered by JS -->
+      </div>
+    </div>
+
+    <!-- Subagent Activity & Live Testing Console -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <!-- Quick Test & Dispatcher Form -->
+      <div class="glass rounded-2xl p-5 lg:col-span-1 space-y-4">
+        <h3 class="font-bold text-sm text-slate-200 flex items-center space-x-2">
+          <i class="fa-solid fa-terminal text-emerald-400"></i>
+          <span>Disparador Rápido de Subagente</span>
+        </h3>
+        <div class="space-y-3">
+          <div>
+            <label class="text-xs text-slate-400 block mb-1">Selecionar Perfil:</label>
+            <select id="dispatch-profile" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-emerald-500">
+              <option value="agy">agy (Conta 1 - Gemini Flash / Pro)</option>
+              <option value="agy-conta2">agy-conta2 (Conta 2 - Hot-Swap)</option>
+              <option value="claude">claude (Anthropic Oficial)</option>
+              <option value="agyclaude">agyclaude (Claude + Antigravity Proxy)</option>
+              <option value="mock">mock (Simulado - Zero Tokens)</option>
+            </select>
+          </div>
+          <div>
+            <label class="text-xs text-slate-400 block mb-1">Prompt da Tarefa:</label>
+            <textarea id="dispatch-prompt" rows="3" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-emerald-500 placeholder-slate-600" placeholder="Ex: Crie um validador de CPF em Python..."></textarea>
+          </div>
+          <button onclick="dispatchTask()" id="btn-dispatch" class="w-full py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-sm font-semibold text-white transition flex items-center justify-center space-x-2 shadow-lg shadow-emerald-600/20">
+            <i class="fa-solid fa-bolt"></i>
+            <span>Executar com Subagente</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Execution Console Log -->
+      <div class="glass rounded-2xl p-5 lg:col-span-2 flex flex-col">
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="font-bold text-sm text-slate-200 flex items-center space-x-2">
+            <i class="fa-solid fa-code text-cyan-400"></i>
+            <span>Console de Saída do Subagente & Failover</span>
+          </h3>
+          <span id="console-status" class="text-xs font-mono text-slate-500">Aguardando comando</span>
+        </div>
+        <div id="console-output" class="w-full flex-1 bg-slate-950/80 border border-slate-800 rounded-xl p-4 font-mono text-xs text-slate-300 overflow-y-auto max-h-[220px] whitespace-pre-wrap">
+=== SISTEMA DE SUBAGENTES PRONTO ===
+- Guardrail 90% ativo e monitorando cotas.
+- Failover autônomo habilitado com suporte a IDE Takeover.
+- Escolha um perfil e clique em "Executar com Subagente" para testar.
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <script>
+    async function fetchStatus() {
+      try {
+        const res = await fetch('/api/status');
+        if (!res.ok) return;
+        const data = await res.json();
+        renderDashboard(data);
+      } catch (err) {
+        console.warn("Erro ao buscar status:", err);
+      }
+    }
+
+    function renderDashboard(data) {
+      // Proxy button status
+      const btnProxy = document.getElementById('btn-proxy');
+      const btnProxyText = document.getElementById('btn-proxy-text');
+      if (data.proxy && data.proxy.is_running) {
+        btnProxyText.innerText = `Proxy: Online (Porta ${data.proxy.port})`;
+        btnProxy.className = "px-3.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-sm font-medium transition flex items-center space-x-2 text-white shadow-md shadow-emerald-600/20";
+      } else {
+        btnProxyText.innerText = `Proxy: Offline`;
+        btnProxy.className = "px-3.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-sm font-medium transition flex items-center space-x-2 text-slate-400 border border-slate-700";
+      }
+
+      // Render Quota Cards
+      const container = document.getElementById('quota-cards-grid');
+      container.innerHTML = '';
+
+      const profiles = data.quotas || {};
+      let anyCritical = false;
+
+      for (const [prof, info] of Object.entries(profiles)) {
+        const pct = info.consumption_percent || 0;
+        let colorClass = "text-emerald-400 bg-emerald-500/10 border-emerald-500/20";
+        let barColor = "bg-emerald-500";
+        let statusText = "Normal";
+
+        if (pct >= 90) {
+          colorClass = "text-rose-400 bg-rose-500/10 border-rose-500/20";
+          barColor = "bg-rose-500";
+          statusText = "Modo Econômico (90%+)";
+          anyCritical = true;
+        } else if (pct >= 70) {
+          colorClass = "text-amber-400 bg-amber-500/10 border-amber-500/20";
+          barColor = "bg-amber-500";
+          statusText = "Atenção (70%+)";
+        }
+
+        const card = document.createElement('div');
+        card.className = "glass rounded-xl p-4 border border-slate-800 hover:border-slate-700 transition";
+        card.innerHTML = `
+          <div class="flex justify-between items-center mb-2">
+            <span class="font-bold text-xs text-slate-300 uppercase">${prof}</span>
+            <span class="px-2 py-0.5 rounded text-[10px] font-bold ${colorClass} border">${statusText}</span>
+          </div>
+          <div class="flex items-baseline space-x-1 mb-2">
+            <span class="text-2xl font-black text-slate-100">${pct}%</span>
+            <span class="text-xs text-slate-500">consumido</span>
+          </div>
+          <div class="w-full bg-slate-800 rounded-full h-2 overflow-hidden mb-2">
+            <div class="${barColor} h-2 rounded-full transition-all duration-500" style="width: ${Math.min(100, pct)}%"></div>
+          </div>
+          <div class="flex justify-between items-center text-[10px] text-slate-500">
+            <span>Requisições: ${info.requests || 0}</span>
+            <button onclick="resetProfileQuota('${prof}')" class="text-slate-400 hover:text-cyan-400">Resetar</button>
+          </div>
+        `;
+        container.appendChild(card);
+      }
+
+      // Update Top Quota Banner
+      const banner = document.getElementById('quota-banner');
+      if (anyCritical) {
+        banner.className = "rounded-xl p-4 border border-rose-500/30 bg-rose-500/10 text-rose-200 block";
+        document.getElementById('quota-banner-icon').className = "fa-solid fa-triangle-exclamation text-rose-400 text-xl";
+        document.getElementById('quota-banner-title').innerText = "Guardrail Ativo: Modo Econômico Ativado em Perfis Críticos";
+        document.getElementById('quota-banner-desc').innerText = "Perfis com consumo >= 90% estão bloqueados para tarefas pesadas, permitindo apenas micro-tarefas para proteção de cota.";
+        document.getElementById('quota-banner-badge').innerText = "90% THRESHOLD ATIVO";
+      } else {
+        banner.className = "hidden";
+      }
+    }
+
+    async function syncCredentials() {
+      const icon = document.getElementById('sync-icon');
+      icon.classList.add('fa-spin');
+      try {
+        const res = await fetch('/api/sync', { method: 'POST' });
+        const data = await res.json();
+        alert(data.message || "Contas sincronizadas com sucesso!");
+        fetchStatus();
+      } catch (err) {
+        alert("Erro ao sincronizar contas: " + err.message);
+      } finally {
+        icon.classList.remove('fa-spin');
+      }
+    }
+
+    async function toggleProxy() {
+      try {
+        const res = await fetch('/api/proxy/toggle', { method: 'POST' });
+        const data = await res.json();
+        fetchStatus();
+      } catch (err) {
+        alert("Erro ao alterar estado do proxy: " + err.message);
+      }
+    }
+
+    async function resetProfileQuota(profile) {
+      try {
+        await fetch('/api/reset-quota', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ profile, percent: 15.0 })
+        });
+        fetchStatus();
+      } catch (err) {
+        alert("Erro ao resetar: " + err.message);
+      }
+    }
+
+    async function testProfile(profile) {
+      document.getElementById('dispatch-profile').value = profile;
+      document.getElementById('dispatch-prompt').value = "Responda apenas: CONEXAO OK";
+      dispatchTask();
+    }
+
+    async function dispatchTask() {
+      const profile = document.getElementById('dispatch-profile').value;
+      const prompt = document.getElementById('dispatch-prompt').value.trim();
+      if (!prompt) {
+        alert("Por favor, digite um prompt.");
+        return;
+      }
+
+      const btn = document.getElementById('btn-dispatch');
+      const consoleStatus = document.getElementById('console-status');
+      const consoleOut = document.getElementById('console-output');
+
+      btn.disabled = true;
+      btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i><span>Executando...</span>`;
+      consoleStatus.innerText = `Executando no perfil: ${profile}...`;
+      consoleOut.innerText = `[${new Date().toLocaleTimeString()}] Iniciando tarefa no perfil '${profile}'...\nPrompt: "${prompt}"\nVerificando Guardrail 90%...\n`;
+
+      try {
+        const res = await fetch('/api/dispatch', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ profile, prompt })
+        });
+        const data = await res.json();
+
+        consoleOut.innerText += `\n=== RESULTADO (Duração: ${data.duration_seconds || '0'}s) ===\n`;
+        consoleOut.innerText += `Status: ${data.status}\n`;
+        if (data.fallback_to_ide) {
+          consoleOut.innerText += `⚠ AUTO-ASSUNÇÃO PELO IDE: Todas as CLIs externas esgotaram a cota. O IDE assumirá a execução.\n`;
+        }
+        consoleOut.innerText += `Perfil Executado: ${data.profile || profile}\n`;
+        consoleOut.innerText += `Saída:\n${data.output_preview || data.error || 'Sem saída'}\n`;
+
+        consoleStatus.innerText = `Finalizado (${data.status})`;
+      } catch (err) {
+        consoleOut.innerText += `\n[ERRO DE CONEXÃO]: ${err.message}\n`;
+        consoleStatus.innerText = "Erro";
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = `<i class="fa-solid fa-bolt"></i><span>Executar com Subagente</span>`;
+        fetchStatus();
+      }
+    }
+
+    // Polling every 3.5 seconds
+    setInterval(fetchStatus, 3500);
+    fetchStatus();
+  </script>
+</body>
+</html>

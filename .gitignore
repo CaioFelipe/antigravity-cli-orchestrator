@@ -1,0 +1,41 @@
+# ==============================================================================
+# SEGURANÇA MÁXIMA: NUNCA COMMITAR CREDENCIAIS OU ARQUIVOS PRIVADOS
+# ==============================================================================
+.agents/credentials/
+.agents/credentials/*
+*.json.secret
+*.token
+*.key
+accounts.json
+.perfis/
+.claude/
+*.lock
+.env
+.env.*
+
+# Tasks temporárias e logs de execução
+.agents/tasks/
+.agents/tasks/*
+**/.agents/tasks/
+**/.agents/tasks/*
+*.log
+quota_tracker.json
+
+# Repositórios clonados externamente
+repos/
+forks/
+
+# Python & Node temporários
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+node_modules/
+npm-debug.log*
+
+# Sistema operacional
+Thumbs.db
+Desktop.ini
+.DS_Store
+*.tmp

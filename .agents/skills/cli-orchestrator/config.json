@@ -1,0 +1,52 @@
+{
+  "profiles": {
+    "mock": {
+      "command": "python",
+      "args_template": ["-c", "import sys; print('=== MOCK SUBAGENT OUTPUT ===\\nTask executed successfully!\\nParameters received: ' + sys.argv[1])", "{prompt}"],
+      "env": {
+        "CLI_SUBAGENT_PROFILE": "mock"
+      },
+      "description": "Perfil simulado para testes e validação sem consumo de tokens de API."
+    },
+    "agy": {
+      "command": "%LOCALAPPDATA%\\agy\\bin\\agy.exe",
+      "args_template": ["-p", "{prompt}", "--dangerously-skip-permissions"],
+      "env": {},
+      "description": "Antigravity CLI executado diretamente com a conta principal."
+    },
+    "agy-conta2": {
+      "command": "%LOCALAPPDATA%\\agy\\bin\\agy.exe",
+      "args_template": ["-p", "{prompt}", "--dangerously-skip-permissions"],
+      "credential_file": ".agents/credentials/conta2.json",
+      "env": {},
+      "description": "Antigravity CLI executado com a Conta 2 via Hot-Swap do cofre (consome assinatura da Conta 2)."
+    },
+    "claude": {
+      "command": "claude",
+      "args_template": ["-p", "{prompt}", "--dangerously-skip-permissions", "--output-format", "text"],
+      "env": {},
+      "description": "Claude Code CLI oficial executado diretamente com a conta Anthropic."
+    },
+    "agyclaude": {
+      "command": "claude",
+      "args_template": ["--model", "gemini-3.8-flash-high", "-p", "{prompt}", "--dangerously-skip-permissions", "--output-format", "text"],
+      "needs_proxy": true,
+      "proxy_port": 8080,
+      "env": {
+        "USERPROFILE": "%USERPROFILE%\\.perfis\\agyclaude",
+        "ANTHROPIC_BASE_URL": "http://127.0.0.1:8080",
+        "ANTHROPIC_AUTH_TOKEN": "antigravity-local-session",
+        "ANTHROPIC_MODEL": "gemini-3.8-flash-high"
+      },
+      "description": "Claude Code conectado aos modelos do Antigravity/Gemini com ciclo de vida automático do proxy."
+    },
+    "aider": {
+      "command": "aider",
+      "args_template": ["--message", "{prompt}", "--yes", "--no-git"],
+      "env": {},
+      "description": "Aider pair programming CLI em modo automático."
+    }
+  },
+  "default_timeout_seconds": 300,
+  "tasks_directory": ".agents/tasks"
+}
