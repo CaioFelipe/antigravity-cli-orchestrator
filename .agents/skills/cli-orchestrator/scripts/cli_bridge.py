@@ -201,12 +201,14 @@ def main():
                     env=env_vars,
                     capture_output=True,
                     text=True,
+                    encoding="utf-8",
+                    errors="replace",
                     timeout=timeout,
                     shell=(sys.platform == "win32" and not cmd_str.endswith(".exe") and cmd_str != "python")
                 )
                 e_code = proc.returncode
-                s_out = proc.stdout
-                s_err = proc.stderr
+                s_out = proc.stdout or ""
+                s_err = proc.stderr or ""
                 if e_code != 0:
                     s_status = "failed"
                     err_msg = f"CLI process exited with non-zero status code: {e_code}"
@@ -228,7 +230,7 @@ def main():
         dur = round(time.time() - st_time, 2)
 
         # Detect Quota Exhaustion during run
-        combined_text = s_out + " " + s_err
+        combined_text = (s_out or "") + " " + (s_err or "")
         if check_quota_error(combined_text):
             print(f"[FAILOVER ALERT] Perfil '{curr_profile_name}' atingiu esgotamento de cota!", file=sys.stderr)
             try:

@@ -6,6 +6,7 @@ when consumption >= 90%, heavy tasks are blocked, permitting only micro-tasks.
 """
 
 import os
+import sys
 import json
 import time
 from pathlib import Path
@@ -56,13 +57,50 @@ def _save_tracker_file(data: Dict[str, Any]):
 
 def get_profile_quota_status(profile: str) -> Dict[str, Any]:
     """
-    Returns consumption percentage (0.0 to 100.0) and status for a given CLI profile.
+    Retorna o percentual real de consumo (0.0 a 100.0) e o status do perfil a partir do cache de cota.
+    Se for agy ou claude, extrai as janelas reais de 5h e semanal.
     """
     tracker = _ensure_tracker_file()
     profile_data = tracker.get("profiles", {}).get(profile, {})
-    consumption = profile_data.get("simulated_consumption", 20.0)
+    consumption = profile_data.get("simulated_consumption", 10.0)
+    windows_data = None
+    stale = False
 
-    # Check live accounts.json for active rate-limits (applies to agyclaude proxy)
+    # Tenta obter dados reais para agy e claude via usage_cache
+    try:
+        scripts_dir = Path(__file__).resolve().parent
+        if str(scripts_dir) not in sys.path:
+            sys.path.insert(0, str(scripts_dir))
+        from usage_cache import get_usage
+
+        if profile == "agy" or profile.startswith("agy-"):
+            account_id = "conta1" if profile == "agy" else profile.replace("agy-", "")
+            cred_file = f".agents/credentials/{account_id}.json" if account_id != "conta1" else None
+            real_usage = get_usage("agy", account_id=account_id, credential_file=cred_file, async_refresh=True)
+            if real_usage and real_usage.get("parse_ok") and not real_usage.get("loading"):
+                w5h = real_usage.get("windows", {}).get("5h", {})
+                w_week = real_usage.get("windows", {}).get("weekly", {})
+                c_5h = w5h.get("consumption_percent", 0.0)
+                c_week = w_week.get("consumption_percent", 0.0)
+                consumption = max(c_5h, c_week)
+                windows_data = real_usage.get("windows")
+                stale = real_usage.get("stale", False)
+
+        elif profile == "claude" or profile.startswith("claude-"):
+            account_id = "principal" if profile == "claude" else profile.replace("claude-", "")
+            real_usage = get_usage("claude", account_id=account_id, async_refresh=True)
+            if real_usage and real_usage.get("parse_ok") and not real_usage.get("loading"):
+                w5h = real_usage.get("windows", {}).get("5h", {})
+                w_week = real_usage.get("windows", {}).get("weekly", {})
+                c_5h = w5h.get("consumption_percent", 0.0)
+                c_week = w_week.get("consumption_percent", 0.0)
+                consumption = max(c_5h, c_week)
+                windows_data = real_usage.get("windows")
+                stale = real_usage.get("stale", False)
+    except Exception:
+        pass
+
+    # Checa accounts.json do proxy para rate-limits ativos do agyclaude
     is_rate_limited = False
     if ACCOUNTS_FILE.exists() and profile == "agyclaude":
         try:
@@ -82,19 +120,23 @@ def get_profile_quota_status(profile: str) -> Dict[str, Any]:
     if consumption >= 100.0 or is_rate_limited:
         status = "EXHAUSTED"
     elif consumption >= 90.0:
-        status = "CRITICAL"  # Modo Economico: Apenas Micro-Tarefas
+        status = "CRITICAL"  # Modo Econômico: Apenas Micro-Tarefas
     elif consumption >= 70.0:
         status = "WARNING"
     else:
         status = "HEALTHY"
 
-    return {
+    res = {
         "profile": profile,
         "consumption_percent": round(consumption, 1),
         "status": status,
         "is_rate_limited": is_rate_limited,
         "economic_mode": consumption >= 90.0
     }
+    if windows_data:
+        res["windows"] = windows_data
+        res["stale"] = stale
+    return res
 
 
 def record_task_execution(profile: str, is_heavy: bool = False):

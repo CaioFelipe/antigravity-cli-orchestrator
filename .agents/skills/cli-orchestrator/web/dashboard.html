@@ -87,132 +87,45 @@
     </div>
 
     <!-- Accounts Cards Grid -->
+    <!-- Contas Google Antigravity Section -->
     <div>
       <div class="flex items-center justify-between mb-4">
-        <h2 class="text-base font-semibold text-slate-300 flex items-center space-x-2">
-          <i class="fa-solid fa-users-gear text-emerald-400"></i>
-          <span>Contas Conectadas & Autenticação</span>
-        </h2>
-        <span class="text-xs text-slate-500">Isolamento total de perfis ativos</span>
+        <div>
+          <h2 class="text-base font-semibold text-slate-200 flex items-center space-x-2">
+            <i class="fa-brands fa-google text-emerald-400"></i>
+            <span>Contas Google Antigravity</span>
+          </h2>
+          <p class="text-xs text-slate-400">Alternância atômica sem trocar de usuário no Windows (Hot-Swap via Win32 CredReadW/CredWriteW)</p>
+        </div>
+        <button onclick="openAddAccountModal('agy')" class="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-xs font-semibold text-white transition flex items-center space-x-1.5 shadow-md shadow-emerald-600/20">
+          <i class="fa-solid fa-plus text-[10px]"></i>
+          <span>Adicionar Conta Google</span>
+        </button>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
-        <!-- Conta 1: Google Antigravity Principal -->
-        <div class="glass rounded-2xl p-5 relative overflow-hidden transition hover:border-slate-700">
-          <div class="flex justify-between items-start mb-3">
-            <div class="flex items-center space-x-2.5">
-              <div class="w-9 h-9 rounded-lg bg-blue-500/10 text-blue-400 border border-blue-500/20 flex items-center justify-center">
-                <i class="fa-brands fa-google text-base"></i>
-              </div>
-              <div>
-                <h3 class="font-bold text-sm text-slate-100">Antigravity Principal</h3>
-                <span class="text-xs text-emerald-400 font-medium flex items-center space-x-1">
-                  <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                  <span>Cofre Windows (Ativo)</span>
-                </span>
-              </div>
-            </div>
-            <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Pro</span>
-          </div>
-          <div class="space-y-1.5 text-xs text-slate-300">
-            <div class="flex justify-between">
-              <span class="text-slate-400">Email:</span>
-              <span class="font-mono text-slate-200 truncate max-w-[180px]" id="conta1-email">caiofelipegl@gmail.com</span>
-            </div>
-            <div class="flex justify-between">
-              <span class="text-slate-400">Perfil CLI:</span>
-              <span class="font-mono text-emerald-400 font-semibold">agy</span>
-            </div>
-            <div class="flex justify-between">
-              <span class="text-slate-400">Canal:</span>
-              <span class="text-slate-300">Binário Nativo Direto</span>
-            </div>
-          </div>
-          <div class="mt-4 pt-3 border-t border-slate-800 flex justify-between items-center">
-            <button onclick="testProfile('agy')" class="w-full py-1.5 px-3 rounded bg-slate-800 hover:bg-slate-700 text-xs font-medium text-slate-300 transition flex items-center justify-center space-x-1.5">
-              <i class="fa-solid fa-play text-[10px] text-emerald-400"></i>
-              <span>Testar Conexão</span>
-            </button>
-          </div>
-        </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5" id="agy-accounts-grid">
+        <!-- Renderizado dinamicamente via JS -->
+      </div>
+    </div>
 
-        <!-- Conta 2: Google Antigravity Secundária -->
-        <div class="glass rounded-2xl p-5 relative overflow-hidden transition hover:border-slate-700">
-          <div class="flex justify-between items-start mb-3">
-            <div class="flex items-center space-x-2.5">
-              <div class="w-9 h-9 rounded-lg bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 flex items-center justify-center">
-                <i class="fa-brands fa-google text-base"></i>
-              </div>
-              <div>
-                <h3 class="font-bold text-sm text-slate-100">Antigravity Secundária</h3>
-                <span class="text-xs text-cyan-400 font-medium flex items-center space-x-1">
-                  <span class="w-1.5 h-1.5 rounded-full bg-cyan-400"></span>
-                  <span>Hot-Swap Pronto</span>
-                </span>
-              </div>
-            </div>
-            <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">Assinatura 2</span>
-          </div>
-          <div class="space-y-1.5 text-xs text-slate-300">
-            <div class="flex justify-between">
-              <span class="text-slate-400">Email:</span>
-              <span class="font-mono text-slate-200 truncate max-w-[180px]" id="conta2-email">caio.lopes@unemat.br</span>
-            </div>
-            <div class="flex justify-between">
-              <span class="text-slate-400">Perfil CLI:</span>
-              <span class="font-mono text-cyan-400 font-semibold">agy-conta2</span>
-            </div>
-            <div class="flex justify-between">
-              <span class="text-slate-400">Swap Atômico:</span>
-              <span class="text-emerald-400">Win32 CredLock</span>
-            </div>
-          </div>
-          <div class="mt-4 pt-3 border-t border-slate-800 flex justify-between items-center">
-            <button onclick="testProfile('agy-conta2')" class="w-full py-1.5 px-3 rounded bg-slate-800 hover:bg-slate-700 text-xs font-medium text-slate-300 transition flex items-center justify-center space-x-1.5">
-              <i class="fa-solid fa-play text-[10px] text-cyan-400"></i>
-              <span>Testar Conexão</span>
-            </button>
-          </div>
+    <!-- Contas Claude Code Section -->
+    <div>
+      <div class="flex items-center justify-between mb-4">
+        <div>
+          <h2 class="text-base font-semibold text-slate-200 flex items-center space-x-2">
+            <i class="fa-solid fa-brain text-amber-400"></i>
+            <span>Contas Claude Code (Anthropic)</span>
+          </h2>
+          <p class="text-xs text-slate-400">Perfis independentes com isolamento total via CLAUDE_CONFIG_DIR</p>
         </div>
+        <button onclick="openAddAccountModal('claude')" class="px-3 py-1.5 rounded-lg bg-amber-600 hover:bg-amber-500 text-xs font-semibold text-white transition flex items-center space-x-1.5 shadow-md shadow-amber-600/20">
+          <i class="fa-solid fa-plus text-[10px]"></i>
+          <span>Adicionar Conta Claude</span>
+        </button>
+      </div>
 
-        <!-- Claude Code Oficial Anthropic -->
-        <div class="glass rounded-2xl p-5 relative overflow-hidden transition hover:border-slate-700">
-          <div class="flex justify-between items-start mb-3">
-            <div class="flex items-center space-x-2.5">
-              <div class="w-9 h-9 rounded-lg bg-amber-500/10 text-amber-400 border border-amber-500/20 flex items-center justify-center">
-                <i class="fa-solid fa-robot text-base"></i>
-              </div>
-              <div>
-                <h3 class="font-bold text-sm text-slate-100">Claude Code Oficial</h3>
-                <span class="text-xs text-amber-400 font-medium flex items-center space-x-1">
-                  <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
-                  <span>Auth ~/.claude</span>
-                </span>
-              </div>
-            </div>
-            <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-amber-500/10 text-amber-400 border border-amber-500/20">Anthropic</span>
-          </div>
-          <div class="space-y-1.5 text-xs text-slate-300">
-            <div class="flex justify-between">
-              <span class="text-slate-400">Status:</span>
-              <span class="text-emerald-400 font-semibold" id="claude-status">Conectado (OFICIAL)</span>
-            </div>
-            <div class="flex justify-between">
-              <span class="text-slate-400">Perfil CLI:</span>
-              <span class="font-mono text-amber-400 font-semibold">claude</span>
-            </div>
-            <div class="flex justify-between">
-              <span class="text-slate-400">Proteção de Perfil:</span>
-              <span class="text-emerald-400 font-medium">100% Isolado</span>
-            </div>
-          </div>
-          <div class="mt-4 pt-3 border-t border-slate-800 flex justify-between items-center">
-            <button onclick="testProfile('claude')" class="w-full py-1.5 px-3 rounded bg-slate-800 hover:bg-slate-700 text-xs font-medium text-slate-300 transition flex items-center justify-center space-x-1.5">
-              <i class="fa-solid fa-play text-[10px] text-amber-400"></i>
-              <span>Testar Conexão</span>
-            </button>
-          </div>
-        </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5" id="claude-accounts-grid">
+        <!-- Renderizado dinamicamente via JS -->
       </div>
     </div>
 
@@ -283,7 +196,47 @@
 
   </main>
 
+  <!-- Modal Adicionar Conta -->
+  <div id="modal-add-account" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="glass rounded-2xl max-w-md w-full p-6 space-y-4 border border-slate-700 shadow-2xl">
+      <div class="flex justify-between items-center">
+        <h3 class="font-bold text-base text-slate-100 flex items-center space-x-2">
+          <i id="modal-icon" class="fa-solid fa-user-plus text-emerald-400"></i>
+          <span id="modal-title">Adicionar Nova Conta</span>
+        </h3>
+        <button onclick="closeAddAccountModal()" class="text-slate-400 hover:text-white text-sm">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+
+      <div class="space-y-3">
+        <div>
+          <label class="text-xs text-slate-400 block mb-1">Rótulo / Identificação:</label>
+          <input type="text" id="add-account-label" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-emerald-500" placeholder="Ex: Conta Secundária, Outro Gmail...">
+        </div>
+
+        <div id="modal-status-box" class="hidden rounded-xl p-3 bg-slate-900 border border-slate-800 text-xs space-y-1.5">
+          <div class="flex items-center space-x-2 text-slate-300">
+            <i id="modal-spinner" class="fa-solid fa-spinner fa-spin text-emerald-400"></i>
+            <span id="modal-status-text" class="font-medium">Iniciando processo...</span>
+          </div>
+          <p id="modal-status-desc" class="text-slate-500 text-[11px]"></p>
+        </div>
+
+        <div class="pt-2 flex justify-end space-x-2">
+          <button onclick="closeAddAccountModal()" class="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium">Cancelar</button>
+          <button id="btn-confirm-add" onclick="confirmAddAccount()" class="px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold flex items-center space-x-1.5">
+            <span>Iniciar Autenticação</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script>
+    let currentToolToAdd = 'agy';
+    let activeJobPollInterval = null;
+
     async function fetchStatus() {
       try {
         const res = await fetch('/api/status');
@@ -295,8 +248,26 @@
       }
     }
 
+    function formatReset(dateStr) {
+      if (!dateStr) return '';
+      if (dateStr.includes('T')) {
+        try {
+          const d = new Date(dateStr);
+          const now = new Date();
+          const diffMs = d - now;
+          if (diffMs > 0) {
+            const diffHrs = Math.floor(diffMs / (1000 * 60 * 60));
+            const diffMins = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+            return `Reset em ${diffHrs}h ${diffMins}m`;
+          }
+          return `Reset: ${d.toLocaleDateString('pt-BR')} ${d.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'})}`;
+        } catch(e) { return dateStr; }
+      }
+      return `Reset: ${dateStr}`;
+    }
+
     function renderDashboard(data) {
-      // Proxy button status
+      // Proxy status
       const btnProxy = document.getElementById('btn-proxy');
       const btnProxyText = document.getElementById('btn-proxy-text');
       if (data.proxy && data.proxy.is_running) {
@@ -307,10 +278,207 @@
         btnProxy.className = "px-3.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-sm font-medium transition flex items-center space-x-2 text-slate-400 border border-slate-700";
       }
 
-      // Render Quota Cards
+      const reg = data.accounts_registry || {};
+      const agyGrid = document.getElementById('agy-accounts-grid');
+      const claudeGrid = document.getElementById('claude-accounts-grid');
+      const selectProfile = document.getElementById('dispatch-profile');
+
+      // Preenche dropdown de dispatch
+      const currentSelected = selectProfile.value;
+      selectProfile.innerHTML = '';
+
+      // 1. Contas Google Antigravity
+      agyGrid.innerHTML = '';
+      (reg.agy_accounts || []).forEach((acc, idx) => {
+        const u = acc.usage || {};
+        const w5h = u.windows?.['5h'] || { consumption_percent: 0, remaining_percent: 100, reset_at: '' };
+        const wWeek = u.windows?.weekly || { consumption_percent: 0, remaining_percent: 100, reset_at: '' };
+
+        const opt = document.createElement('option');
+        opt.value = acc.profile;
+        opt.innerText = `${acc.label} (${acc.profile}) - ${acc.email || ''}`;
+        if (acc.profile === currentSelected) opt.selected = true;
+        selectProfile.appendChild(opt);
+
+        const card = document.createElement('div');
+        card.className = "glass rounded-2xl p-5 relative overflow-hidden transition hover:border-slate-700 flex flex-col justify-between";
+        card.innerHTML = `
+          <div>
+            <div class="flex justify-between items-start mb-3">
+              <div class="flex items-center space-x-2.5">
+                <div class="w-9 h-9 rounded-lg bg-blue-500/10 text-blue-400 border border-blue-500/20 flex items-center justify-center">
+                  <i class="fa-brands fa-google text-base"></i>
+                </div>
+                <div>
+                  <h3 class="font-bold text-sm text-slate-100">${acc.label}</h3>
+                  <span class="text-xs text-emerald-400 font-medium flex items-center space-x-1">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 ${idx === 0 ? 'animate-pulse' : ''}"></span>
+                    <span>${acc.channel}</span>
+                  </span>
+                </div>
+              </div>
+              <div class="flex items-center space-x-1.5">
+                <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">${acc.tier || 'Pro'}</span>
+                ${(reg.agy_accounts.length > 1 && idx > 0) ? `
+                  <button onclick="deleteAccount('agy', '${acc.id}')" title="Excluir conta" class="text-slate-500 hover:text-rose-400 p-1 transition text-xs">
+                    <i class="fa-solid fa-trash"></i>
+                  </button>
+                ` : ''}
+              </div>
+            </div>
+
+            <div class="space-y-1.5 text-xs text-slate-300 mb-4">
+              <div class="flex justify-between">
+                <span class="text-slate-400">Email:</span>
+                <span class="font-mono text-slate-200 truncate max-w-[170px]" title="${acc.email}">${acc.email || 'Não informado'}</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-slate-400">Perfil CLI:</span>
+                <span class="font-mono text-emerald-400 font-semibold">${acc.profile}</span>
+              </div>
+            </div>
+
+            <div class="space-y-3 pt-3 border-t border-slate-800">
+              <div>
+                <div class="flex justify-between text-[11px] mb-1">
+                  <span class="text-slate-400 font-medium">Janela 5 Horas:</span>
+                  <span class="font-bold ${w5h.consumption_percent >= 90 ? 'text-rose-400' : 'text-emerald-400'}">${w5h.consumption_percent}% usado</span>
+                </div>
+                <div class="w-full bg-slate-800 rounded-full h-1.5 overflow-hidden">
+                  <div class="${w5h.consumption_percent >= 90 ? 'bg-rose-500' : 'bg-emerald-500'} h-1.5 rounded-full" style="width: ${Math.min(100, w5h.consumption_percent)}%"></div>
+                </div>
+                <div class="text-[10px] text-slate-500 mt-0.5 text-right font-mono">${formatReset(w5h.reset_at)}</div>
+              </div>
+
+              <div>
+                <div class="flex justify-between text-[11px] mb-1">
+                  <span class="text-slate-400 font-medium">Limite Semanal:</span>
+                  <span class="font-bold ${wWeek.consumption_percent >= 90 ? 'text-rose-400' : 'text-cyan-400'}">${wWeek.consumption_percent}% usado</span>
+                </div>
+                <div class="w-full bg-slate-800 rounded-full h-1.5 overflow-hidden">
+                  <div class="${wWeek.consumption_percent >= 90 ? 'bg-rose-500' : 'bg-cyan-500'} h-1.5 rounded-full" style="width: ${Math.min(100, wWeek.consumption_percent)}%"></div>
+                </div>
+                <div class="text-[10px] text-slate-500 mt-0.5 text-right font-mono">${formatReset(wWeek.reset_at)}</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-4 pt-3 border-t border-slate-800 flex space-x-2">
+            <button onclick="testProfile('${acc.profile}')" class="flex-1 py-1.5 px-2 rounded bg-slate-800 hover:bg-slate-700 text-xs font-medium text-slate-300 transition flex items-center justify-center space-x-1">
+              <i class="fa-solid fa-play text-[10px] text-emerald-400"></i>
+              <span>Testar</span>
+            </button>
+            <button onclick="refreshUsage('agy', '${acc.id}')" title="Forçar leitura real da CLI" class="px-2.5 py-1.5 rounded bg-slate-800 hover:bg-slate-700 text-xs font-medium text-slate-400 hover:text-cyan-400 transition">
+              <i class="fa-solid fa-rotate text-[10px]"></i>
+            </button>
+          </div>
+        `;
+        agyGrid.appendChild(card);
+      });
+
+      // 2. Contas Claude Code
+      claudeGrid.innerHTML = '';
+      (reg.claude_accounts || []).forEach((acc, idx) => {
+        const u = acc.usage || {};
+        const w5h = u.windows?.['5h'] || { consumption_percent: 0, remaining_percent: 100, reset_at: '' };
+        const wWeek = u.windows?.weekly || { consumption_percent: 0, remaining_percent: 100, reset_at: '' };
+
+        const opt = document.createElement('option');
+        opt.value = acc.profile;
+        opt.innerText = `${acc.label} (${acc.profile})`;
+        if (acc.profile === currentSelected) opt.selected = true;
+        selectProfile.appendChild(opt);
+
+        const card = document.createElement('div');
+        card.className = "glass rounded-2xl p-5 relative overflow-hidden transition hover:border-slate-700 flex flex-col justify-between";
+        card.innerHTML = `
+          <div>
+            <div class="flex justify-between items-start mb-3">
+              <div class="flex items-center space-x-2.5">
+                <div class="w-9 h-9 rounded-lg bg-amber-500/10 text-amber-400 border border-amber-500/20 flex items-center justify-center">
+                  <i class="fa-solid fa-brain text-base"></i>
+                </div>
+                <div>
+                  <h3 class="font-bold text-sm text-slate-100">${acc.label}</h3>
+                  <span class="text-xs text-amber-400 font-medium flex items-center space-x-1">
+                    <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+                    <span>${acc.channel}</span>
+                  </span>
+                </div>
+              </div>
+              <div class="flex items-center space-x-1.5">
+                <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-amber-500/10 text-amber-400 border border-amber-500/20">${acc.tier || 'Anthropic'}</span>
+                ${(reg.claude_accounts.length > 1 && idx > 0) ? `
+                  <button onclick="deleteAccount('claude', '${acc.id}')" title="Excluir conta" class="text-slate-500 hover:text-rose-400 p-1 transition text-xs">
+                    <i class="fa-solid fa-trash"></i>
+                  </button>
+                ` : ''}
+              </div>
+            </div>
+
+            <div class="space-y-1.5 text-xs text-slate-300 mb-4">
+              <div class="flex justify-between">
+                <span class="text-slate-400">Perfil CLI:</span>
+                <span class="font-mono text-amber-400 font-semibold">${acc.profile}</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-slate-400">Isolamento:</span>
+                <span class="text-emerald-400 font-medium">100% Protegido</span>
+              </div>
+            </div>
+
+            <div class="space-y-3 pt-3 border-t border-slate-800">
+              <div>
+                <div class="flex justify-between text-[11px] mb-1">
+                  <span class="text-slate-400 font-medium">Sessão Atual (5h):</span>
+                  <span class="font-bold ${w5h.consumption_percent >= 90 ? 'text-rose-400' : 'text-amber-400'}">${w5h.consumption_percent}% usado</span>
+                </div>
+                <div class="w-full bg-slate-800 rounded-full h-1.5 overflow-hidden">
+                  <div class="${w5h.consumption_percent >= 90 ? 'bg-rose-500' : 'bg-amber-500'} h-1.5 rounded-full" style="width: ${Math.min(100, w5h.consumption_percent)}%"></div>
+                </div>
+                <div class="text-[10px] text-slate-500 mt-0.5 text-right font-mono">${formatReset(w5h.reset_at)}</div>
+              </div>
+
+              <div>
+                <div class="flex justify-between text-[11px] mb-1">
+                  <span class="text-slate-400 font-medium">Limite Semanal:</span>
+                  <span class="font-bold ${wWeek.consumption_percent >= 90 ? 'text-rose-400' : 'text-cyan-400'}">${wWeek.consumption_percent}% usado</span>
+                </div>
+                <div class="w-full bg-slate-800 rounded-full h-1.5 overflow-hidden">
+                  <div class="${wWeek.consumption_percent >= 90 ? 'bg-rose-500' : 'bg-cyan-500'} h-1.5 rounded-full" style="width: ${Math.min(100, wWeek.consumption_percent)}%"></div>
+                </div>
+                <div class="text-[10px] text-slate-500 mt-0.5 text-right font-mono">${formatReset(wWeek.reset_at)}</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-4 pt-3 border-t border-slate-800 flex space-x-2">
+            <button onclick="testProfile('${acc.profile}')" class="flex-1 py-1.5 px-2 rounded bg-slate-800 hover:bg-slate-700 text-xs font-medium text-slate-300 transition flex items-center justify-center space-x-1">
+              <i class="fa-solid fa-play text-[10px] text-amber-400"></i>
+              <span>Testar</span>
+            </button>
+            <button onclick="refreshUsage('claude', '${acc.id}')" title="Forçar leitura real da CLI" class="px-2.5 py-1.5 rounded bg-slate-800 hover:bg-slate-700 text-xs font-medium text-slate-400 hover:text-cyan-400 transition">
+              <i class="fa-solid fa-rotate text-[10px]"></i>
+            </button>
+          </div>
+        `;
+        claudeGrid.appendChild(card);
+      });
+
+      // Perfis extras
+      const optProxy = document.createElement('option');
+      optProxy.value = "agyclaude";
+      optProxy.innerText = "agyclaude (Claude Code via Antigravity Proxy)";
+      selectProfile.appendChild(optProxy);
+
+      const optMock = document.createElement('option');
+      optMock.value = "mock";
+      optMock.innerText = "mock (Simulado - Zero Tokens)";
+      selectProfile.appendChild(optMock);
+
+      // 3. Medidores de Cota Consolidados
       const container = document.getElementById('quota-cards-grid');
       container.innerHTML = '';
-
       const profiles = data.quotas || {};
       let anyCritical = false;
 
@@ -340,26 +508,26 @@
           </div>
           <div class="flex items-baseline space-x-1 mb-2">
             <span class="text-2xl font-black text-slate-100">${pct}%</span>
-            <span class="text-xs text-slate-500">consumido</span>
+            <span class="text-xs text-slate-500">gargalo real</span>
           </div>
           <div class="w-full bg-slate-800 rounded-full h-2 overflow-hidden mb-2">
             <div class="${barColor} h-2 rounded-full transition-all duration-500" style="width: ${Math.min(100, pct)}%"></div>
           </div>
           <div class="flex justify-between items-center text-[10px] text-slate-500">
             <span>Requisições: ${info.requests || 0}</span>
-            <button onclick="resetProfileQuota('${prof}')" class="text-slate-400 hover:text-cyan-400">Resetar</button>
+            <button onclick="resetProfileQuota('${prof}')" class="text-slate-400 hover:text-cyan-400">Reset</button>
           </div>
         `;
         container.appendChild(card);
       }
 
-      // Update Top Quota Banner
+      // Banner 90% Guardrail
       const banner = document.getElementById('quota-banner');
       if (anyCritical) {
         banner.className = "rounded-xl p-4 border border-rose-500/30 bg-rose-500/10 text-rose-200 block";
         document.getElementById('quota-banner-icon').className = "fa-solid fa-triangle-exclamation text-rose-400 text-xl";
         document.getElementById('quota-banner-title').innerText = "Guardrail Ativo: Modo Econômico Ativado em Perfis Críticos";
-        document.getElementById('quota-banner-desc').innerText = "Perfis com consumo >= 90% estão bloqueados para tarefas pesadas, permitindo apenas micro-tarefas para proteção de cota.";
+        document.getElementById('quota-banner-desc').innerText = "Perfis com consumo >= 90% estão bloqueados para tarefas pesadas, permitindo apenas micro-tarefas.";
         document.getElementById('quota-banner-badge').innerText = "90% THRESHOLD ATIVO";
       } else {
         banner.className = "hidden";
@@ -384,19 +552,153 @@
     async function toggleProxy() {
       try {
         const res = await fetch('/api/proxy/toggle', { method: 'POST' });
-        const data = await res.json();
         fetchStatus();
       } catch (err) {
-        alert("Erro ao alterar estado do proxy: " + err.message);
+        alert("Erro ao alternar proxy: " + err.message);
       }
     }
 
-    async function resetProfileQuota(profile) {
+    async function refreshUsage(tool, accountId) {
+      try {
+        await fetch('/api/accounts/refresh', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ tool, account_id: accountId })
+        });
+        fetchStatus();
+      } catch (err) {
+        console.warn("Erro ao atualizar cota:", err);
+      }
+    }
+
+    async function deleteAccount(tool, accountId) {
+      if (!confirm(`Deseja realmente remover a conta (${accountId}) do orquestrador?`)) return;
+      try {
+        const res = await fetch('/api/accounts/delete', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ tool, account_id: accountId })
+        });
+        const data = await res.json();
+        if (data.success) {
+          fetchStatus();
+        } else {
+          alert("Não foi possível remover a conta principal.");
+        }
+      } catch (err) {
+        alert("Erro ao remover conta: " + err.message);
+      }
+    }
+
+    function openAddAccountModal(tool) {
+      currentToolToAdd = tool;
+      const modal = document.getElementById('modal-add-account');
+      const title = document.getElementById('modal-title');
+      const icon = document.getElementById('modal-icon');
+      const labelInput = document.getElementById('add-account-label');
+      const statusBox = document.getElementById('modal-status-box');
+      const btnConfirm = document.getElementById('btn-confirm-add');
+
+      statusBox.classList.add('hidden');
+      btnConfirm.disabled = false;
+      labelInput.disabled = false;
+
+      if (tool === 'agy') {
+        title.innerText = "Adicionar Conta Google (Antigravity)";
+        icon.className = "fa-brands fa-google text-emerald-400";
+        labelInput.placeholder = "Ex: Google Secundária, Outro Gmail...";
+      } else {
+        title.innerText = "Adicionar Perfil Claude Code";
+        icon.className = "fa-solid fa-brain text-amber-400";
+        labelInput.placeholder = "Ex: Claude Secundário, Perfil Trabalho...";
+      }
+
+      modal.classList.remove('hidden');
+    }
+
+    function closeAddAccountModal() {
+      if (activeJobPollInterval) {
+        clearInterval(activeJobPollInterval);
+        activeJobPollInterval = null;
+      }
+      document.getElementById('modal-add-account').classList.add('hidden');
+    }
+
+    async function confirmAddAccount() {
+      const label = document.getElementById('add-account-label').value.trim();
+      const statusBox = document.getElementById('modal-status-box');
+      const statusText = document.getElementById('modal-status-text');
+      const statusDesc = document.getElementById('modal-status-desc');
+      const btnConfirm = document.getElementById('btn-confirm-add');
+      const spinner = document.getElementById('modal-spinner');
+
+      btnConfirm.disabled = true;
+      document.getElementById('add-account-label').disabled = true;
+      statusBox.classList.remove('hidden');
+      spinner.className = "fa-solid fa-spinner fa-spin text-emerald-400";
+      statusText.innerText = "Iniciando processo...";
+      statusDesc.innerText = "Preparando autenticação segura...";
+
+      try {
+        const res = await fetch('/api/accounts/add', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ tool: currentToolToAdd, label })
+        });
+        const data = await res.json();
+        if (!data.success || !data.job_id) {
+          throw new Error("Falha ao iniciar job de autenticação.");
+        }
+
+        const jobId = data.job_id;
+        activeJobPollInterval = setInterval(async () => {
+          try {
+            const jRes = await fetch(`/api/jobs/${jobId}`);
+            if (!jRes.ok) return;
+            const job = await jRes.json();
+
+            if (job.status === 'waiting_login') {
+              statusText.innerText = "Aguardando login...";
+              statusDesc.innerText = job.message || "Conclua o login na janela que abriu.";
+            } else if (job.status === 'in_progress') {
+              statusText.innerText = "Processando credencial...";
+              statusDesc.innerText = job.message;
+            } else if (job.status === 'success') {
+              clearInterval(activeJobPollInterval);
+              activeJobPollInterval = null;
+              spinner.className = "fa-solid fa-check text-emerald-400";
+              statusText.innerText = "Conta Adicionada com Sucesso!";
+              statusDesc.innerText = job.message;
+              setTimeout(() => {
+                closeAddAccountModal();
+                fetchStatus();
+              }, 1500);
+            } else if (job.status === 'error') {
+              clearInterval(activeJobPollInterval);
+              activeJobPollInterval = null;
+              spinner.className = "fa-solid fa-xmark text-rose-400";
+              statusText.innerText = "Erro na Autenticação";
+              statusDesc.innerText = job.message;
+              btnConfirm.disabled = false;
+            }
+          } catch (e) {
+            console.warn("Poll job error:", e);
+          }
+        }, 1500);
+
+      } catch (err) {
+        statusText.innerText = "Erro ao iniciar";
+        statusDesc.innerText = err.message;
+        btnConfirm.disabled = false;
+      }
+    }
+
+    async function resetProfileQuota(prof) {
       try {
         await fetch('/api/reset-quota', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ profile, percent: 15.0 })
+          body: JSON.stringify({ profile: prof, percent: 10.0 })
         });
         fetchStatus();
       } catch (err) {
@@ -404,9 +706,9 @@
       }
     }
 
-    async function testProfile(profile) {
-      document.getElementById('dispatch-profile').value = profile;
-      document.getElementById('dispatch-prompt').value = "Responda apenas: CONEXAO OK";
+    async function testProfile(prof) {
+      document.getElementById('dispatch-profile').value = prof;
+      document.getElementById('dispatch-prompt').value = "Responda apenas com: CONEXAO OK";
       dispatchTask();
     }
 
@@ -419,12 +721,12 @@
       }
 
       const btn = document.getElementById('btn-dispatch');
-      const consoleStatus = document.getElementById('console-status');
-      const consoleOut = document.getElementById('console-output');
+      const timeBox = document.getElementById('dispatch-time');
+      const consoleOut = document.getElementById('dispatch-output');
 
       btn.disabled = true;
       btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i><span>Executando...</span>`;
-      consoleStatus.innerText = `Executando no perfil: ${profile}...`;
+      if (timeBox) timeBox.innerText = `Executando no perfil: ${profile}...`;
       consoleOut.innerText = `[${new Date().toLocaleTimeString()}] Iniciando tarefa no perfil '${profile}'...\nPrompt: "${prompt}"\nVerificando Guardrail 90%...\n`;
 
       try {
@@ -443,19 +745,19 @@
         consoleOut.innerText += `Perfil Executado: ${data.profile || profile}\n`;
         consoleOut.innerText += `Saída:\n${data.output_preview || data.error || 'Sem saída'}\n`;
 
-        consoleStatus.innerText = `Finalizado (${data.status})`;
+        if (timeBox) timeBox.innerText = `Finalizado (${data.status})`;
       } catch (err) {
         consoleOut.innerText += `\n[ERRO DE CONEXÃO]: ${err.message}\n`;
-        consoleStatus.innerText = "Erro";
+        if (timeBox) timeBox.innerText = "Erro";
       } finally {
         btn.disabled = false;
-        btn.innerHTML = `<i class="fa-solid fa-bolt"></i><span>Executar com Subagente</span>`;
+        btn.innerHTML = `<i class="fa-solid fa-paper-plane text-xs"></i><span>Executar Subagente</span>`;
         fetchStatus();
       }
     }
 
-    // Polling every 3.5 seconds
-    setInterval(fetchStatus, 3500);
+    // Polling a cada 4 segundos
+    setInterval(fetchStatus, 4000);
     fetchStatus();
   </script>
 </body>
