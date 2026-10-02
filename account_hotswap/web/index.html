@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Antigravity Hot-Swap de Contas</title>
+  <style>
+    :root {
+      --bg-page: #0a0d14;
+      --bg-surface: #121722;
+      --bg-card: #182030;
+      --bg-card-hover: #1e283d;
+      --border-color: #27334d;
+      --border-focus: #3b82f6;
+      --text-primary: #f8fafc;
+      --text-secondary: #94a3b8;
+      --text-muted: #64748b;
+      --accent-blue: #3b82f6;
+      --accent-blue-hover: #2563eb;
+      --accent-green: #10b981;
+      --accent-yellow: #f59e0b;
+      --accent-red: #ef4444;
+      --accent-purple: #8b5cf6;
+      --accent-purple-hover: #7c3aed;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-page);
+      color: var(--text-primary);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Top Navigation */
+    header {
+      background-color: var(--bg-surface);
+      border-bottom: 1px solid var(--border-color);
+      padding: 14px 28px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 40;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-icon {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+      border-radius: 9px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 1.05rem;
+      color: white;
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    }
+
+    .brand-name {
+      font-size: 1.15rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-size: 0.86rem;
+      font-weight: 600;
+      padding: 8px 16px;
+      border-radius: 8px;
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      outline: none;
+    }
+
+    .btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .btn-primary {
+      background-color: var(--accent-blue);
+      color: #fff;
+    }
+    .btn-primary:hover:not(:disabled) {
+      background-color: var(--accent-blue-hover);
+      box-shadow: 0 4px 14px rgba(59, 130, 246, 0.4);
+    }
+
+    .btn-success {
+      background-color: var(--accent-green);
+      color: #fff;
+    }
+    .btn-success:hover:not(:disabled) {
+      background-color: #059669;
+      box-shadow: 0 4px 14px rgba(16, 185, 129, 0.3);
+    }
+
+    .btn-secondary {
+      background-color: #1a2233;
+      border-color: var(--border-color);
+      color: var(--text-primary);
+    }
+    .btn-secondary:hover:not(:disabled) {
+      background-color: #242f47;
+      border-color: #3b4b6e;
+    }
+
+    .btn-restart {
+      background-color: rgba(139, 92, 246, 0.18);
+      border: 1px solid rgba(139, 92, 246, 0.45);
+      color: #c084fc;
+    }
+    .btn-restart:hover:not(:disabled) {
+      background-color: rgba(139, 92, 246, 0.3);
+      border-color: #c084fc;
+      box-shadow: 0 0 16px rgba(139, 92, 246, 0.35);
+    }
+
+    .btn-switch {
+      background-color: var(--accent-blue);
+      color: #fff;
+      width: 100%;
+      padding: 10px;
+    }
+    .btn-switch:hover:not(:disabled) {
+      background-color: var(--accent-blue-hover);
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    }
+
+    .btn-active-state {
+      background-color: rgba(16, 185, 129, 0.12);
+      border: 1px solid rgba(16, 185, 129, 0.35);
+      color: var(--accent-green);
+      width: 100%;
+      padding: 10px;
+      cursor: default;
+      font-weight: 700;
+    }
+
+    .btn-delete {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 6px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: color 0.15s ease, background-color 0.15s ease;
+    }
+    .btn-delete:hover {
+      color: var(--accent-red);
+      background-color: rgba(239, 68, 68, 0.12);
+    }
+
+    /* Main Container */
+    main {
+      flex: 1;
+      max-width: 1100px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 28px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+    }
+
+    /* Active Banner */
+    .active-banner {
+      background: linear-gradient(90deg, rgba(59, 130, 246, 0.12) 0%, rgba(139, 92, 246, 0.08) 100%);
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      border-radius: 12px;
+      padding: 16px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 14px;
+    }
+
+    .active-banner-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .pulse-dot {
+      width: 10px;
+      height: 10px;
+      background-color: var(--accent-green);
+      border-radius: 50%;
+      box-shadow: 0 0 10px var(--accent-green);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(0.95); opacity: 0.8; }
+      50% { transform: scale(1.2); opacity: 1; }
+      100% { transform: scale(0.95); opacity: 0.8; }
+    }
+
+    .active-banner-text {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .active-title {
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #93c5fd;
+      font-weight: 700;
+    }
+
+    .active-account-name {
+      font-size: 1.05rem;
+      font-weight: 700;
+    }
+
+    .active-account-email {
+      font-size: 0.84rem;
+      color: var(--text-secondary);
+    }
+
+    /* Accounts Grid */
+    .grid-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .grid-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .grid-count {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+    }
+
+    .accounts-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 18px;
+    }
+
+    /* Card */
+    .account-card {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 16px;
+      transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+      position: relative;
+    }
+
+    .account-card:hover {
+      border-color: #3b4b6e;
+    }
+
+    .account-card.is-active {
+      border-color: var(--accent-blue);
+      background: linear-gradient(180deg, rgba(59, 130, 246, 0.08) 0%, var(--bg-card) 100%);
+      box-shadow: 0 0 24px rgba(59, 130, 246, 0.15);
+    }
+
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    .card-info {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .card-name {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .card-email {
+      font-size: 0.84rem;
+      color: var(--text-secondary);
+      word-break: break-all;
+    }
+
+    .status-badge {
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 20px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .badge-active {
+      background-color: rgba(16, 185, 129, 0.2);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.4);
+    }
+
+    .badge-ready {
+      background-color: rgba(59, 130, 246, 0.15);
+      color: #93c5fd;
+      border: 1px solid rgba(59, 130, 246, 0.3);
+    }
+
+    /* Quota Section */
+    .quota-box {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      background-color: rgba(10, 13, 20, 0.45);
+      border: 1px solid rgba(39, 51, 77, 0.6);
+      border-radius: 8px;
+      padding: 12px 14px;
+    }
+
+    .quota-item {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .quota-item-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.8rem;
+    }
+
+    .quota-label {
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    .quota-value {
+      color: var(--text-primary);
+      font-weight: 700;
+    }
+
+    .progress-bar-bg {
+      width: 100%;
+      height: 6px;
+      background-color: #27334d;
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      border-radius: 3px;
+      transition: width 0.3s ease;
+    }
+
+    .progress-green { background-color: var(--accent-green); }
+    .progress-yellow { background-color: var(--accent-yellow); }
+    .progress-red { background-color: var(--accent-red); }
+
+    .card-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    /* Modal */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background-color: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(4px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+    }
+
+    .modal-card {
+      background-color: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      width: 100%;
+      max-width: 480px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-label {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+
+    .form-input {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 10px 14px;
+      color: var(--text-primary);
+      font-size: 0.9rem;
+      outline: none;
+      transition: border-color 0.15s ease;
+    }
+    .form-input:focus {
+      border-color: var(--border-focus);
+    }
+
+    .modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 8px;
+    }
+
+    /* Toast */
+    #toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background-color: #1e283d;
+      border: 1px solid #3b82f6;
+      color: #fff;
+      padding: 14px 20px;
+      border-radius: 8px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+      display: none;
+      z-index: 200;
+      animation: fadeIn 0.2s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .spinner {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top-color: #fff;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navigation -->
+  <header>
+    <div class="brand">
+      <div class="brand-icon">⚡</div>
+      <div class="brand-name">Antigravity Hot-Swap</div>
+    </div>
+    <div class="header-actions">
+      <label style="display: flex; align-items: center; gap: 6px; font-size: 0.82rem; font-weight: 600; color: #93c5fd; cursor: pointer; margin-right: 6px;" title="Envia automaticamente 'continue' para o chat do Antigravity após a troca de conta para os agentes não pararem">
+        <input type="checkbox" id="chkAutoContinue" checked style="accent-color: #3b82f6; width: 15px; height: 15px; cursor: pointer;">
+        Auto-Continue
+      </label>
+      <button class="btn btn-secondary" onclick="enviarContinueManual()" title="Envia comando 'continue' diretamente para o chat do Antigravity" style="padding: 7px 12px; font-size: 0.82rem;">
+        ▶ Enviar Continue
+      </button>
+      <button class="btn btn-restart" onclick="reiniciarAntigravity()" title="Fecha e reabre o Antigravity em 2 segundos para aplicar a nova conta">
+        🔄 Reiniciar Antigravity (1-Clique)
+      </button>
+      <button class="btn btn-success" onclick="abrirModalNovaConta()">
+        ➕ Adicionar Conta Google
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main>
+    <!-- Active Account Banner -->
+    <div class="active-banner">
+      <div class="active-banner-info">
+        <div class="pulse-dot"></div>
+        <div class="active-banner-text">
+          <span class="active-title">Conta Ativa no Antigravity</span>
+          <span class="active-account-name" id="valActiveName">Carregando...</span>
+          <span class="active-account-email" id="valActiveEmail">Verificando cofre do sistema...</span>
+        </div>
+      </div>
+      <div style="display: flex; gap: 8px; align-items: center;">
+        <button class="btn btn-secondary" onclick="sincronizarAtiva()" style="font-size: 0.8rem; padding: 6px 12px;" title="Captura a credencial que estiver salva no Windows">
+          📥 Sincronizar do Windows
+        </button>
+      </div>
+    </div>
+
+    <!-- Accounts Grid -->
+    <div class="grid-header">
+      <h2 class="grid-title">Suas Contas</h2>
+      <span class="grid-count" id="valAccountsCount">0 contas</span>
+    </div>
+
+    <div class="accounts-grid" id="accountsGrid">
+      <!-- Cards renderizados dinamicamente -->
+    </div>
+  </main>
+
+  <!-- Modal Adicionar Conta -->
+  <div class="modal-overlay" id="modalNovaConta">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 class="modal-title">Adicionar Conta Google</h3>
+        <button class="btn-delete" onclick="fecharModalNovaConta()">✕</button>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Apelido da Conta (opcional)</label>
+        <input type="text" id="inputNomeConta" class="form-input" placeholder="Ex: Conta Secundária ou Unemat">
+      </div>
+
+      <div style="background: rgba(10, 13, 20, 0.5); padding: 14px; border-radius: 8px; border: 1px solid var(--border-color); font-size: 0.86rem; color: var(--text-secondary); line-height: 1.5;">
+        Clique no botão abaixo para abrir a página oficial de login do Google. Faça o login e confirme o acesso. O sistema detectará a conta e salvará automaticamente!
+      </div>
+
+      <button class="btn btn-primary" id="btnIniciarLogin" onclick="iniciarLoginGoogle()" style="width: 100%; padding: 12px;">
+        🌐 Abrir Login no Navegador
+      </button>
+
+      <div id="enrollLinkManual" style="display: none; font-size: 0.8rem; word-break: break-all; text-align: center;">
+        <a href="#" id="linkUrlGoogle" target="_blank" style="color: #60a5fa;">Se o navegador não abriu automaticamente, clique aqui</a>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary" onclick="fecharModalNovaConta()">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast"></div>
+
+  <script>
+    let state = {
+      accounts: [],
+      active_account: null,
+      quotas: {}
+    };
+
+    let enrollPollInterval = null;
+
+    function showToast(msg) {
+      const toast = document.getElementById("toast");
+      toast.innerText = msg;
+      toast.style.display = "block";
+      setTimeout(() => { toast.style.display = "none"; }, 4000);
+    }
+
+    async function fetchStatus() {
+      try {
+        const res = await fetch("/api/status");
+        if (!res.ok) return;
+        state = await res.json();
+        renderDashboard();
+      } catch (err) {
+        console.error("Erro ao buscar status:", err);
+      }
+    }
+
+    function renderDashboard() {
+      const active = state.active_account;
+      document.getElementById("valActiveName").innerText = active ? active.name : "Nenhuma Conta Conectada";
+      document.getElementById("valActiveEmail").innerText = active ? active.email : "Adicione uma conta abaixo para começar";
+      document.getElementById("valAccountsCount").innerText = `${state.accounts.length} conta(s) registrada(s)`;
+
+      const grid = document.getElementById("accountsGrid");
+      grid.innerHTML = "";
+
+      if (state.accounts.length === 0) {
+        grid.innerHTML = `
+          <div style="grid-column: 1 / -1; padding: 36px; text-align: center; color: var(--text-secondary); background: var(--bg-card); border-radius: 12px; border: 1px dashed var(--border-color);">
+            Nenhuma conta cadastrada ainda. Clique em <strong>"Adicionar Conta Google"</strong> acima.
+          </div>
+        `;
+        return;
+      }
+
+      state.accounts.forEach(acc => {
+        const isActive = active && acc.id === active.id;
+        const quotaData = (state.quotas && state.quotas[acc.id]) ? state.quotas[acc.id] : null;
+
+        const card = document.createElement("div");
+        card.className = `account-card ${isActive ? 'is-active' : ''}`;
+
+        // Quotas
+        const q5h = quotaData ? quotaData.quota_5h : { percent_remaining: 100, badge: "100% Livre" };
+        const qWeekly = quotaData ? quotaData.quota_weekly : { percent_remaining: 100, badge: "100% Disponível" };
+
+        let q5hColorClass = "progress-green";
+        if (q5h.percent_remaining < 30) q5hColorClass = "progress-red";
+        else if (q5h.percent_remaining < 60) q5hColorClass = "progress-yellow";
+
+        let qWeeklyColorClass = "progress-green";
+        if (qWeekly.percent_remaining < 30) qWeeklyColorClass = "progress-red";
+
+        card.innerHTML = `
+          <div>
+            <div class="card-top">
+              <div class="card-info">
+                <span class="card-name">${acc.name}</span>
+                <span class="card-email">${acc.email}</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 6px;">
+                ${isActive ? `
+                  <span class="status-badge badge-active">● Em Uso</span>
+                ` : `
+                  <span class="status-badge badge-ready">Disponível</span>
+                `}
+                <button class="btn-delete" onclick="excluirConta('${acc.id}', '${acc.name}')" title="Remover conta do cofre">
+                  ✕
+                </button>
+              </div>
+            </div>
+
+            <div class="quota-box" style="margin-top: 14px;">
+              <!-- 5h Quota -->
+              <div class="quota-item">
+                <div class="quota-item-header">
+                  <span class="quota-label">⏱️ Janela de 5 Horas</span>
+                  <span class="quota-value">${q5h.badge}</span>
+                </div>
+                <div class="progress-bar-bg">
+                  <div class="progress-bar-fill ${q5hColorClass}" style="width: ${q5h.percent_remaining}%;"></div>
+                </div>
+              </div>
+
+              <!-- Weekly Quota -->
+              <div class="quota-item">
+                <div class="quota-item-header">
+                  <span class="quota-label">📅 Cota Semanal</span>
+                  <span class="quota-value">${qWeekly.badge}</span>
+                </div>
+                <div class="progress-bar-bg">
+                  <div class="progress-bar-fill ${qWeeklyColorClass}" style="width: ${qWeekly.percent_remaining}%;"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card-actions">
+            ${isActive ? `
+              <div class="btn btn-active-state">
+                ✓ Ativa no Antigravity
+              </div>
+            ` : `
+              <button class="btn btn-switch" onclick="fazerHotSwap('${acc.id}', '${acc.name}')">
+                ⚡ Usar Esta Conta
+              </button>
+            `}
+          </div>
+        `;
+
+        grid.appendChild(card);
+      });
+    }
+
+    // Ação de Troca Rápida com Auto-Continue
+    async function fazerHotSwap(accountId, accountName) {
+      const autoContinue = document.getElementById("chkAutoContinue") ? document.getElementById("chkAutoContinue").checked : true;
+      showToast(`Alternando para '${accountName}'...`);
+      try {
+        const res = await fetch("/api/switch", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ account_id: accountId, auto_continue: autoContinue })
+        });
+        const data = await res.json();
+        if (data.success) {
+          showToast(`✅ ${data.message}`);
+        } else {
+          showToast(`❌ ${data.message}`);
+        }
+        fetchStatus();
+      } catch (e) {
+        showToast("Falha ao comunicar com o servidor.");
+      }
+    }
+
+    // Enviar comando 'continue' manualmente para o Antigravity
+    async function enviarContinueManual() {
+      showToast("Enviando 'continue' para o chat do Antigravity...");
+      try {
+        const res = await fetch("/api/send_continue", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ prompt: "continue" })
+        });
+        const data = await res.json();
+        showToast(data.message);
+      } catch (e) {
+        showToast("Falha ao enviar comando para o Antigravity.");
+      }
+    }
+
+    // Reinício Completo do Antigravity (1-Clique)
+    async function reiniciarAntigravity() {
+      if (!confirm("Deseja reiniciar o Antigravity agora? O aplicativo fechará e reabrirá automaticamente em 2 segundos.")) {
+        return;
+      }
+      const autoContinue = document.getElementById("chkAutoContinue") ? document.getElementById("chkAutoContinue").checked : true;
+      showToast("Reiniciando o Antigravity em 2 segundos...");
+      try {
+        const res = await fetch("/api/restart_ide", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ auto_continue: autoContinue })
+        });
+        const data = await res.json();
+        showToast(data.message);
+      } catch (e) {
+        showToast("Comando enviado.");
+      }
+    }
+
+    async function sincronizarAtiva() {
+      const nome = prompt("Apelido para a conta atual do Windows (ex: Conta Principal):", "Conta Antigravity");
+      if (!nome) return;
+      try {
+        const res = await fetch("/api/accounts/capture_active", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name: nome })
+        });
+        const data = await res.json();
+        showToast(data.message);
+        fetchStatus();
+      } catch (e) {
+        showToast("Erro ao sincronizar credencial.");
+      }
+    }
+
+    async function excluirConta(accountId, name) {
+      if (!confirm(`Deseja realmente remover '${name}' do gerenciador?`)) return;
+      try {
+        const res = await fetch("/api/accounts/delete", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ account_id: accountId })
+        });
+        const data = await res.json();
+        showToast(data.message);
+        fetchStatus();
+      } catch (e) {
+        showToast("Erro ao excluir conta.");
+      }
+    }
+
+    // Modal Nova Conta Google
+    function abrirModalNovaConta() {
+      document.getElementById("inputNomeConta").value = "";
+      document.getElementById("btnIniciarLogin").innerHTML = "🌐 Abrir Login no Navegador";
+      document.getElementById("btnIniciarLogin").disabled = false;
+      document.getElementById("enrollLinkManual").style.display = "none";
+      document.getElementById("modalNovaConta").style.display = "flex";
+    }
+
+    function fecharModalNovaConta() {
+      document.getElementById("modalNovaConta").style.display = "none";
+      if (enrollPollInterval) {
+        clearInterval(enrollPollInterval);
+        enrollPollInterval = null;
+      }
+    }
+
+    async function iniciarLoginGoogle() {
+      const name = document.getElementById("inputNomeConta").value.trim() || "Nova Conta Google";
+      const btn = document.getElementById("btnIniciarLogin");
+      btn.innerHTML = `<span class="spinner"></span> Aguardando autorização no navegador...`;
+      btn.disabled = true;
+
+      try {
+        const res = await fetch("/api/accounts/enroll", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name: name })
+        });
+        const data = await res.json();
+        if (data.auth_url) {
+          const link = document.getElementById("linkUrlGoogle");
+          link.href = data.auth_url;
+          document.getElementById("enrollLinkManual").style.display = "block";
+        }
+
+        // Inicia polling até concluir
+        if (enrollPollInterval) clearInterval(enrollPollInterval);
+        enrollPollInterval = setInterval(verificarEnrollStatus, 1500);
+      } catch (e) {
+        btn.innerHTML = "🌐 Abrir Login no Navegador";
+        btn.disabled = false;
+        showToast("Erro ao iniciar login.");
+      }
+    }
+
+    async function verificarEnrollStatus() {
+      try {
+        const res = await fetch("/api/accounts/enroll_status");
+        if (!res.ok) return;
+        const st = await res.json();
+
+        if (st.state === "completed") {
+          clearInterval(enrollPollInterval);
+          enrollPollInterval = null;
+          showToast(`🎉 Conta ${st.account ? st.account.email : ''} conectada com sucesso!`);
+          fecharModalNovaConta();
+          fetchStatus();
+        } else if (st.state === "error") {
+          clearInterval(enrollPollInterval);
+          enrollPollInterval = null;
+          showToast(`❌ ${st.error_message || 'Erro durante a autenticação.'}`);
+          document.getElementById("btnIniciarLogin").innerHTML = "🌐 Tentar Novamente";
+          document.getElementById("btnIniciarLogin").disabled = false;
+        }
+      } catch (e) {
+        console.error("Erro ao verificar status de login:", e);
+      }
+    }
+
+    // Inicialização e polling automático
+    fetchStatus();
+    setInterval(fetchStatus, 4000);
+  </script>
+</body>
+</html>

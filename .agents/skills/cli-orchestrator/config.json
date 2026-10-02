@@ -34,28 +34,14 @@
       "description": "Antigravity CLI executado com a Conta 2 via Hot-Swap do cofre (consome assinatura da Conta 2)."
     },
     "claude": {
-      "command": "claude",
-      "args_template": [
-        "-p",
-        "{prompt}",
-        "--dangerously-skip-permissions",
-        "--output-format",
-        "text"
-      ],
+      "command": "claude.cmd",
+      "args_template": ["--model", "sonnet", "-p", "{prompt}", "--dangerously-skip-permissions", "--output-format", "text"],
       "env": {},
-      "description": "Claude Code CLI (Claude Code Oficial)"
+      "description": "Claude Code CLI oficial executado diretamente com a conta Anthropic (Claude Sonnet)."
     },
     "agyclaude": {
-      "command": "claude",
-      "args_template": [
-        "--model",
-        "gemini-3.8-flash-high",
-        "-p",
-        "{prompt}",
-        "--dangerously-skip-permissions",
-        "--output-format",
-        "text"
-      ],
+      "command": "%APPDATA%\\npm\\claude.cmd",
+      "args_template": ["--model", "gemini-3.8-flash-high", "-p", "{prompt}", "--dangerously-skip-permissions", "--output-format", "text"],
       "needs_proxy": true,
       "proxy_port": 8080,
       "env": {

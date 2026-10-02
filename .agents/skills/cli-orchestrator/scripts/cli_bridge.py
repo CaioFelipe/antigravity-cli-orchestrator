@@ -161,12 +161,26 @@ def main():
         if not curr_profile:
             return "error", 1, "", f"Perfil '{curr_profile_name}' não encontrado.", 0.0
 
-        # Build command arguments
+        import shutil
         cmd_str = os.path.expandvars(curr_profile.get("command"))
+        resolved_cmd = shutil.which(cmd_str) or cmd_str
         tmpl_args = curr_profile.get("args_template", ["{prompt}"])
-        full_args = [cmd_str]
-        for arg_template in tmpl_args:
-            full_args.append(arg_template.replace("{prompt}", full_prompt))
+        
+        full_args = []
+        if sys.platform == "win32" and (resolved_cmd.lower().endswith(".cmd") or resolved_cmd.lower().endswith(".bat")):
+            full_args = ["cmd.exe", "/c", resolved_cmd]
+        else:
+            full_args = [resolved_cmd]
+
+        use_stdin = False
+        if curr_profile_name in ["claude", "agyclaude"]:
+            use_stdin = True
+            for arg_template in tmpl_args:
+                if arg_template not in ["-p", "{prompt}"]:
+                    full_args.append(arg_template)
+        else:
+            for arg_template in tmpl_args:
+                full_args.append(arg_template.replace("{prompt}", full_prompt))
 
         # Environment variables
         env_vars = resolve_env_vars(curr_profile.get("env", {}))
@@ -199,12 +213,13 @@ def main():
                     full_args,
                     cwd=str(working_dir),
                     env=env_vars,
+                    input=full_prompt if use_stdin else None,
+                    stdin=None if use_stdin else subprocess.DEVNULL,
                     capture_output=True,
-                    text=True,
                     encoding="utf-8",
                     errors="replace",
                     timeout=timeout,
-                    shell=(sys.platform == "win32" and not cmd_str.endswith(".exe") and cmd_str != "python")
+                    shell=False
                 )
                 e_code = proc.returncode
                 s_out = proc.stdout or ""
@@ -215,8 +230,8 @@ def main():
         except subprocess.TimeoutExpired as te:
             s_status = "timeout"
             e_code = -1
-            s_out = te.stdout if te.stdout else ""
-            s_err = te.stderr if te.stderr else ""
+            s_out = (te.stdout.decode("utf-8", errors="replace") if isinstance(te.stdout, bytes) else te.stdout) if te.stdout else ""
+            s_err = (te.stderr.decode("utf-8", errors="replace") if isinstance(te.stderr, bytes) else te.stderr) if te.stderr else ""
             err_msg = f"Command timed out after {timeout} seconds"
         except FileNotFoundError:
             s_status = "error"

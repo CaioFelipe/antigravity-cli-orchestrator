@@ -7,6 +7,9 @@
 *.token
 *.key
 accounts.json
+account_hotswap/data/
+account_hotswap/data/*
+testes/
 .perfis/
 .claude/
 *.lock
@@ -21,9 +24,11 @@ accounts.json
 *.log
 quota_tracker.json
 
-# Repositórios clonados externamente
+# Repositórios clonados externamente e pastas locais
 repos/
 forks/
+account_hotswap/
+testes/
 
 # Python & Node temporários
 __pycache__/
